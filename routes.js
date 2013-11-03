@@ -40,11 +40,12 @@ var routes = function() {
     return this.parseGroups(path);
   };
 
-  var matchRoute = function(url, e) {
+  var matchRoute = function(url, method, e) {
     var route = null;
     for(var i = 0; route = _routes[i]; i ++) {
       var routeMatch = route.regex.regexp.exec(url);
       if(!!routeMatch == false) continue;
+      if(method && method != route.method) continue;
 
       var params = {};
       for(var g in route.regex.groups) {
@@ -110,7 +111,7 @@ var routes = function() {
 
     me.run = function() {
       if(!triggered) {
-        matchRoute(document.location.pathname);
+        matchRoute(document.location.hash);
         triggered = true;
       }
     };
@@ -118,7 +119,7 @@ var routes = function() {
     // Intercept FORM submissions.
     window.addEventListener("submit", function(e) {
       if(e.target.method == "post") {
-        if (matchRoute(e.target.action, e)) {
+        if (matchRoute(e.target.action, 'post', e)) {
            e.preventDefault();
            return false;
         }
@@ -134,14 +135,14 @@ var routes = function() {
         return;
       }
 
-      matchRoute(document.location.pathname);
+      matchRoute(document.location.hash);
       // popstate fires before a hash change, don't fire twice.
       cancelHashChange = true;
     }, false);
 
     window.addEventListener("load", function(e) {
       if(!triggered) {
-        matchRoute(document.location.pathname);
+        matchRoute(document.location.hash);
         triggered = true;
       }
 
@@ -155,7 +156,7 @@ var routes = function() {
         cancelPopstate = false;
         return;
       }
-      matchRoute(document.location.pathname);
+      matchRoute(document.location.hash);
     }, false);
   };
 
