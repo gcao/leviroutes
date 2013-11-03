@@ -42,7 +42,10 @@ var routes = function() {
 
   var splitInTwo = function(s, sep) {
     var i = s.indexOf(sep);
-    return [s.slice(0,i), s.slice(i+1)];
+    if (i >= 0)
+      return [s.slice(0,i), s.slice(i+1)];
+    else
+      return [s, null];
   }
 
   var parseQuery = function(queryString) {
