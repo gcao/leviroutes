@@ -1,12 +1,12 @@
 /*
- Copyright 2011 Paul Kinlan 
+ Copyright 2011 Paul Kinlan
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
  You may obtain a copy of the License at
 
  http://www.apache.org/licenses/LICENSE-2.0
- 
+
  Unless required by applicable law or agreed to in writing, software
  distributed under the License is distributed on an "AS IS" BASIS,
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +20,7 @@ var routes = function() {
 
   this.parseRoute = function(path) {
     this.parseGroups = function(loc) {
-      var nameRegexp = new RegExp(":([^/.\\\\]+)", "g"); 
+      var nameRegexp = new RegExp(":([^/.\\\\]+)", "g");
       var newRegexp = "" + loc;
       var groups = {};
       var matches = null;
@@ -29,15 +29,15 @@ var routes = function() {
       // Find the places to edit.
       while(matches = nameRegexp.exec(loc)) {
         groups[matches[1]] = i++;
-        newRegexp = newRegexp.replace(matches[0], "([^/.\\\\]+)"); 
+        newRegexp = newRegexp.replace(matches[0], "([^/.\\\\]+)");
       }
 
       newRegexp += "$"; // Only do a full string match
 
       return { "groups" : groups, "regexp": new RegExp(newRegexp)};
     };
-      
-    return this.parseGroups(path); 
+
+    return this.parseGroups(path);
   };
 
   var matchRoute = function(url, e) {
@@ -45,7 +45,7 @@ var routes = function() {
     for(var i = 0; route = _routes[i]; i ++) {
       var routeMatch = route.regex.regexp.exec(url);
       if(!!routeMatch == false) continue;
-      
+
       var params = {};
       for(var g in route.regex.groups) {
         var group = route.regex.groups[g];
@@ -61,7 +61,7 @@ var routes = function() {
           if(!!item.name) values[item.name] = item.value;
         }
       }
-      
+
       route.callback({"url": url, "params": params, "values" : values, "e": e});
       return true;
     }
@@ -92,7 +92,7 @@ var routes = function() {
 
     // Add a new event to HTML5 History
     if(!!window.history && !!window.history.pushState) {
-      
+
       var pushStateProxy = history.__proto__.pushState;
 
       history.__proto__.pushState = function(state, title, url) {
@@ -123,7 +123,7 @@ var routes = function() {
            return false;
         }
       }
-      // If we haven't matched a URL let the normal request happen. 
+      // If we haven't matched a URL let the normal request happen.
       return true;
     });
 
